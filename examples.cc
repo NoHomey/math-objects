@@ -24,7 +24,8 @@ int main() {
     std::cout << (3 * c) << std::endl;
     std::cout << r(2) << std::endl;
     std::cout << c(2) << std::endl;
-    std::cout << m(5) << std::endl;
+    std::cout << (r * c) << std::endl;
+    std::cout << (c * r) << std::endl;
 
     return 0;
 }
