@@ -72,6 +72,23 @@ F operator()(number i, number j) const {
     return data[i][j];
 }
 
+F operator()(number i) const {
+    --i;
+    if(M == 1) {
+        if(i >= N) {
+            throw std::out_of_range("i must be in the range [1, N]");
+        }
+        return data[0][i];
+    } else if (N == 1) {
+        if(i >= M) {
+            throw std::out_of_range("i must be in the range [1, M]");
+        }
+        return data[i][0];
+    } else {
+        throw std::out_of_range("Operation not supported. Matrix is not a Vector");
+    }
+}
+
 Matrix<M, N, F> operator+(const Matrix<M, N, F>& matrix) const {
     F sum[M][N];
     for(number i = 0; i < M; ++i) {
@@ -115,6 +132,12 @@ F data[M][N];
 private:
 Matrix() = default;
 };
+
+template<number N, typename F>
+using RowVector = Matrix<1, N, F>;
+
+template<number N, typename F>
+using ColumnVector = Matrix<N, 1, F>;
 
 template<number M, number N, typename F>
 Matrix<M, N, F> operator*(const F& scalar, const Matrix<M, N, F>& matrix) {
