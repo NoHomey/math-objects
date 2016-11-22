@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using math_objects::linear_algebra::Matrix;
+using namespace math_objects::linear_algebra;
 
 int main() {
     Matrix<2, 3, int> m = {
@@ -10,6 +10,8 @@ int main() {
         2, 4, 6   
     };
     auto mt = m.T();
+    auto r = RowVector<3, int>({0, 1, 0});
+    auto c = ColumnVector<3, int>({0, 1, 0});
     std::cout << (m + m) << std::endl;
     std::cout << (9 * m) << std::endl;
     std::cout << m << std::endl;
@@ -18,6 +20,11 @@ int main() {
     std::cout << m(2, 3) << std::endl;
     std::cout << mt(3, 2) << std::endl;
     std::cout << (Matrix<2, 2, int>({0, 1, 0, 0}) * Matrix<2, 2, int>({0, 0, 0, 1})) << std::endl;
+    std::cout << (3 * r) << std::endl;
+    std::cout << (3 * c) << std::endl;
+    std::cout << r(2) << std::endl;
+    std::cout << c(2) << std::endl;
+    std::cout << m(5) << std::endl;
 
     return 0;
 }
