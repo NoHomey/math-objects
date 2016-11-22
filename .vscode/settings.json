@@ -1,0 +1,9 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "C_Cpp.clang_format_path": "/usr/bin/clang-3.8",
+    "clang.executable": "/usr/bin/clang-3.8",
+    "clang.cxxflags": [
+        "-std=c++14"
+    ],
+    "editor.fontSize": 18
+}
