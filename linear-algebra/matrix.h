@@ -188,13 +188,10 @@ F raw_det(const number n, F** matrix) {
         return matrix[0][0];
     } else {
         const number minorN = n - 1;
-        F** minor = new F*[minorN];
-        std::cout << "alloc " << minor << ' ' << minorN << std::endl;
         for(number i = 0; i < n; ++i) {
-            minor[i] = new F[minorN];
-        }
-        for(number i = 0; i < n; ++i) {
+            F** minor = new F*[minorN];
             for(number k = 1; k < n; ++k) {
+                minor[k - 1] = new F[minorN];
                 for(number j = 0; j < n; ++j) {
                     if(j != i) {
                         minor[k - 1][j - (j < i ? 0 : 1)] = matrix[k][j];
@@ -202,13 +199,11 @@ F raw_det(const number n, F** matrix) {
                 }
             }
             result += ((i % 2) == 0 ? 1 : -1) * matrix[0][i] * raw_det<F>(minorN, minor);
+            for(number k = 0; k < minorN; ++k) {
+                delete[] minor[k];
+            }
+            delete[] minor;
         }
-        std::cout << "delete " << minor << std::endl;
-        for(number i = 0; i < n; ++i) {
-            delete[] minor[i];
-        }
-        delete[] minor;
-        std::cout << "deleted" << std::endl;
     }
     return result;
 }
