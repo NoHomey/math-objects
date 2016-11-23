@@ -26,6 +26,10 @@ int main() {
     std::cout << c(2) << std::endl;
     std::cout << (r * c) << std::endl;
     std::cout << (c * r) << std::endl;
+    
+    int matrix[5][5] = {{1, 2, 3, 4, 1}, {1, 4, 2, 3, 1}, {1, 3, 4, 2, 1}, {1, 5, 5, 5, 1}, {1, 2, 3, 4, 5}};
+
+    std::cout << det(SquareMatrix<5, int>(matrix)) << std::endl;
 
     return 0;
 }
