@@ -13,12 +13,14 @@ namespace linear_algebra {
 template<number M, number N, typename F>
 class Matrix {
 public:
-Matrix(std::initializer_list<F> list) {
+Matrix(const std::initializer_list<F> list) {
     if(list.size() != (M * N)) {
         throw std::length_error("Matrix size is not M * N");
     }
     auto iterator = std::begin(list);
+    data = new F*[M];
     for(number i = 0; i < M; ++i) {
+        data[i] = new F[N];
         for(number j = 0; j < N; ++j) {
             data[i][j] = *iterator;
             ++iterator;
@@ -26,16 +28,20 @@ Matrix(std::initializer_list<F> list) {
     }
 }
 
-Matrix(F init[M][N]) {
+Matrix(const F init[M][N]) {
+    data = new F*[M];
     for(number i = 0; i < M; ++i) {
+        data[i] = new F[N];
         for(number j = 0; j < N; ++j) {
             data[i][j] = init[i][j];
         }
     }
 }
 
-Matrix(F list[M*N]) {
+Matrix(const F list[M*N]) {
+    data = new F*[M];
     for(number i = 0; i < M; ++i) {
+        data[i] = new F[N];
         for(number j = 0; j < N; ++j) {
             data[i][j] = list[i + j];
         }
@@ -43,11 +49,20 @@ Matrix(F list[M*N]) {
 }
 
 Matrix(const Matrix<M, N, F>& matrix) {
+    data = new F*[M];
     for(number i = 0; i < M; ++i) {
+        data[i] = new F[N];
         for(number j = 0; j < N; ++j) {
             data[i][j] = matrix.data[i][j];
         }
     }
+}
+
+~Matrix() {
+    for(number i = 0; i < M; ++i) {
+        delete[] data[i];
+    }
+    delete[] data;
 }
 
 number size() const {
@@ -89,6 +104,10 @@ F operator()(number i) const {
     }
 }
 
+F** raw() const {
+    return const_cast<F**>(data);
+}
+
 Matrix<M, N, F> operator+(const Matrix<M, N, F>& matrix) const {
     F sum[M][N];
     for(number i = 0; i < M; ++i) {
@@ -127,7 +146,7 @@ Matrix<N, M, F> T() const {
 }
 
 protected:
-F data[M][N];
+F** data;
 
 private:
 Matrix() = default;
@@ -139,6 +158,9 @@ using RowVector = Matrix<1, N, F>;
 template<number N, typename F>
 using ColumnVector = Matrix<N, 1, F>;
 
+template<number N, typename F>
+using SquareMatrix = Matrix<N, N, F>;
+
 template<number M, number N, typename F>
 Matrix<M, N, F> operator*(const F& scalar, const Matrix<M, N, F>& matrix) {
     F prod[M][N];
@@ -149,6 +171,46 @@ Matrix<M, N, F> operator*(const F& scalar, const Matrix<M, N, F>& matrix) {
     }
 
     return Matrix<M, N, F>(prod);
+}
+
+template<typename F>
+F raw_det(const number n, F** matrix);
+
+template<number N, typename F>
+F det(const SquareMatrix<N, F> matrix) {    
+    return raw_det(N, matrix.raw());
+}
+
+template<typename F>
+F raw_det(const number n, F** matrix) {
+    F result = 0;
+    if(n == 1) {
+        return matrix[0][0];
+    } else {
+        const number minorN = n - 1;
+        F** minor = new F*[minorN];
+        std::cout << "alloc " << minor << ' ' << minorN << std::endl;
+        for(number i = 0; i < n; ++i) {
+            minor[i] = new F[minorN];
+        }
+        for(number i = 0; i < n; ++i) {
+            for(number k = 1; k < n; ++k) {
+                for(number j = 0; j < n; ++j) {
+                    if(j != i) {
+                        minor[k - 1][j - (j < i ? 0 : 1)] = matrix[k][j];
+                    }
+                }
+            }
+            result += ((i % 2) == 0 ? 1 : -1) * matrix[0][i] * raw_det<F>(minorN, minor);
+        }
+        std::cout << "delete " << minor << std::endl;
+        for(number i = 0; i < n; ++i) {
+            delete[] minor[i];
+        }
+        delete[] minor;
+        std::cout << "deleted" << std::endl;
+    }
+    return result;
 }
 
 template<number M, number N, typename F>
