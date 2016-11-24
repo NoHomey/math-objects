@@ -1,4 +1,4 @@
-#include "linear-algebra/matrix.h"
+#include "../linear-algebra/matrix.h"
 
 #include <iostream>
 
