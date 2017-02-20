@@ -85,9 +85,12 @@ Permutation operator()(const size_t i, const size_t j) const {
 
 Permutation operator()(const Cycle& cycle) const {
     const size_t cycleSize = cycle.size();
-    Permutation result = Permutation(*this);
     size_t prev = cycle[0];
     size_t next = cycle[1];
+    if(cycleSize == 2) {
+        return operator()(prev, next);
+    }
+    Permutation result = Permutation(*this);
     for(size_t i = 1; i < cycleSize; ++i) {
         result.elements[prev - 1] = next;
         prev = next;
@@ -126,6 +129,7 @@ int main() {
     //Permutation p2 = {1, 2, 4, 5};
     std::cout << p1(p1(3)) << std::endl;
     std::cout << (p1^2) << std::endl;
+    std::cout << (p1^7) << std::endl;
     std::cout << p1(3, 4) << std::endl;
     std::cout << p1(3, 4)({1, 4, 3}) << std::endl;
     std::cout << Permutation(10, {{1, 10, 4, 7, 9, 6, 2}, {3, 8}}) << std::endl;
